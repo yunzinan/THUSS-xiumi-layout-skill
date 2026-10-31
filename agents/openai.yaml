@@ -1,0 +1,4 @@
+interface:
+  display_name: "秀米排版"
+  short_description: "复用秀米模板完成图文排版，统一字号与主题色着重，核对原文并保存同步"
+  default_prompt: "请使用 $xiumi-layout，按照现有模板排版我提供的文稿和图片，严格核对原文后保存并同步到公众号。"
