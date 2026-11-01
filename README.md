@@ -27,6 +27,7 @@ xiumi-layout/
 | [BrowserSkill](https://github.com/Tencent/BrowserSkill) | `bsk` CLI + browser extension; install via its `install.sh` + `bsk install-skill` |
 | Logged-in browser | A Chrome/Edge profile already signed in to xiumi.us — **the skill stores no credentials** |
 | Per-task inputs | The manuscript (文稿) and images are provided fresh each task |
+| Image generation (optional) | For generated covers/artwork: default channel is the maintainer's local MOSS gateway (**not available** to other installs — token lives outside the repo). A custom image API can be supplied instead: endpoint, where the key is stored (env var / local config file), model, and parameters |
 
 ## Install
 
@@ -51,7 +52,7 @@ bsk session start --no-focus --browser <id> --json
 4. **Save a copy to self** (keeps the original intact): in 我的图文, hover the card → `另存给其他用户` → tab `另存给个人` → first contact row `自己｜另存给自己` → confirm. Rename the copy (e.g. `模板｜…`) and tag it `模板`; lay out in the copy only. Same-title duplicates must be located by show ID (`a[href$="/paper/for/<id>"]`).
 5. **Lay out per SKILL.md**: font scale (body 14–15px when no template), emphasis = bold + this post's theme color at body size, spacing rules, caption placement, right-aligned signature block, and the org's audit-name mapping (org-local).
 6. **Self-check**: full-text diff against the manuscript, leftovers/residue scan, rendered font-size verification (relative-size residue from copied components is a classic trap), spacing walk-through.
-7. **Save & sync**: Cmd/Ctrl+S, verify the server-side data-version timestamp changed (`GET /api/shows/<id>`), then export/sync to the WeChat draft **only if the task authorizes it**. Draft sync ≠ publish.
+7. **Close out**: run a final **verbatim comparison** against the manuscript (report any mismatch and wait for the user's decision — never resolve it silently), click the toolbar 保存 (Cmd/Ctrl+S equivalent) and verify the server-side data-version timestamp changed (`GET /api/shows/<id>`), then 导出 → 同步到公众号 and wait for the export progress bar to finish **without errors**. For other installs, sync only when the task authorizes it; draft sync ≠ publish.
 
 ## Maintaining the template table
 
