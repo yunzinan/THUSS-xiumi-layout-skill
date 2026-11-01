@@ -27,7 +27,7 @@ xiumi-layout/
 | [BrowserSkill](https://github.com/Tencent/BrowserSkill) | `bsk` CLI + browser extension; install via its `install.sh` + `bsk install-skill` |
 | Logged-in browser | A Chrome/Edge profile already signed in to xiumi.us — **the skill stores no credentials** |
 | Per-task inputs | The manuscript (文稿) and images are provided fresh each task |
-| Image generation (optional) | For generated covers/artwork: default channel is the maintainer's local MOSS gateway (**not available** to other installs — token lives outside the repo). A custom image API can be supplied instead: endpoint, where the key is stored (env var / local config file), model, and parameters |
+| Image generation (optional) | Only needed for generated covers/artwork — default channel is the maintainer's local MOSS gateway, which is **not available** to other installs; supply a custom image API instead (see [Image generation](#image-generation-optional)) |
 
 ## Install
 
@@ -53,6 +53,30 @@ bsk session start --no-focus --browser <id> --json
 5. **Lay out per SKILL.md**: font scale (body 14–15px when no template), emphasis = bold + this post's theme color at body size, spacing rules, caption placement, right-aligned signature block, and the org's audit-name mapping (org-local).
 6. **Self-check**: full-text diff against the manuscript, leftovers/residue scan, rendered font-size verification (relative-size residue from copied components is a classic trap), spacing walk-through.
 7. **Close out**: run a final **verbatim comparison** against the manuscript (report any mismatch and wait for the user's decision — never resolve it silently), click the toolbar 保存 (Cmd/Ctrl+S equivalent) and verify the server-side data-version timestamp changed (`GET /api/shows/<id>`), then 导出 → 同步到公众号 and wait for the export progress bar to finish **without errors**. For other installs, sync only when the task authorizes it; draft sync ≠ publish.
+
+## Image generation (optional)
+
+Cover artwork can be generated rather than hand-made. Two channels are supported:
+
+**Default — the maintainer's MOSS gateway (not portable).**
+The maintainer's environment generates through a local `moss-t2i` skill (MOSS-SFT INT8 model via a CPA gateway); its token lives in `~/.config/moss-t2i/config` (mode 600) on that machine. If you installed this skill from this repo, that channel is **not available** — the agent must not attempt it and will say so.
+
+**Custom channel (recommended for everyone else).**
+State it in the task (or leave a note in the workspace) covering three things:
+
+1. **API endpoint** — OpenAI-images-compatible (`POST {base}/v1/images/generations`) or any custom JSON API
+2. **Where the key lives** — an env-var name or a path to a local file (e.g. `~/.config/my-imggen/key`); **never paste the key into the chat, and never commit it**
+3. **Model & parameters** — model name, size/ratio (cover art must keep key content inside the central **1:1 safe area**), number of images, style hints
+
+Example instruction:
+
+> 生图走我自己的渠道：端点 `https://api.example.com/v1/images/generations`，key 在环境变量 `MY_IMGGEN_KEY`，模型 `my-model`，尺寸 1024x1024，一次出 2 张备选。
+
+Rules the agent follows (spec in `references/ui-operations.md` → 生图渠道):
+
+- The key is read **at runtime** from the location you gave; it is never written into the repo, the skill, or the finished article.
+- Generated images are checked character-by-character for garbled text before upload; composition must satisfy the 1:1 safe-area rule.
+- If the channel fails, the agent reports it and asks for ready-made images or another channel — it never silently switches to an unauthorized service.
 
 ## Maintaining the template table
 
